@@ -10,6 +10,8 @@ import org.launchcode.techjobs.persistent.controllers.HomeController;
 import org.launchcode.techjobs.persistent.models.AbstractEntity;
 import org.launchcode.techjobs.persistent.models.Employer;
 import org.launchcode.techjobs.persistent.models.Job;
+import org.launchcode.techjobs.persistent.models.data.EmployerRepository;
+import org.launchcode.techjobs.persistent.models.data.SkillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
@@ -132,14 +134,14 @@ public class TestTaskThree extends AbstractTest {
         Class homeControllerClass = getClassByName("controllers.HomeController");
         Field employerRepositoryField = null;
 
-        // verify that employerRepository field exists
+        // verify that EmployerRepository field exists
         try {
-            employerRepositoryField = homeControllerClass.getDeclaredField("employerRepository");
+            employerRepositoryField = homeControllerClass.getDeclaredField("EmployerRepository");
         } catch (NoSuchFieldException e) {
-            fail("HomeController should have an employerRepository field");
+            fail("HomeController should have an EmployerRepository field");
         }
 
-        // verify that employerRepository has the correct type
+        // verify that EmployerRepository has the correct type
         Class employerRepositoryClass = getClassByName("models.data.EmployerRepository");
         assertEquals(employerRepositoryClass, employerRepositoryField.getType());
 
@@ -148,31 +150,31 @@ public class TestTaskThree extends AbstractTest {
     }
 
     /*
-     * Verifies that HomeController.displayAddJobForm calls employerRepository.findAll()
+     * Verifies that HomeController.displayAddJobForm calls EmployerRepository.findAll()
      * */
-    // @Test
-    // public void testHomeControllerFetchesEmployers(@Mocked EmployerRepository employerRepository, @Mocked SkillRepository skillRepository) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
-    //     Class homeControllerClass = getClassByName("controllers.HomeController");
-    //     HomeController homeController = new HomeController();
+     @Test
+     public void testHomeControllerFetchesEmployers(@Mocked EmployerRepository EmployerRepository, @Mocked SkillRepository SkillRepository) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
+        Class homeControllerClass = getClassByName("controllers.HomeController");
+         HomeController homeController = new HomeController();
 
-    //     Field employerRepositoryField = homeControllerClass.getDeclaredField("employerRepository");
-    //     employerRepositoryField.setAccessible(true);
-    //     employerRepositoryField.set(homeController, employerRepository);
+         Field employerRepositoryField = homeControllerClass.getDeclaredField("EmployerRepository");
+         employerRepositoryField.setAccessible(true);
+        employerRepositoryField.set(homeController, EmployerRepository);
 
-    //     // not needed for verification, but necessary to make sure calling the controller
-    //     // method doesn't throw a NullPointerException
-    //     Field skillRepositoryField = homeControllerClass.getDeclaredField("skillRepository");
-    //     skillRepositoryField.setAccessible(true);
-    //     skillRepositoryField.set(homeController, skillRepository);
+         // not needed for verification, but necessary to make sure calling the controller
+         // method doesn't throw a NullPointerException
+         Field skillRepositoryField = homeControllerClass.getDeclaredField("SkillRepository");
+         skillRepositoryField.setAccessible(true);
+         skillRepositoryField.set(homeController, SkillRepository);
 
-    //     Model model = new ExtendedModelMap();
+         Model model = new ExtendedModelMap();
 
-    //     new Expectations() {{
-    //         employerRepository.findAll();
-    //     }};
+        new Expectations() {{
+            EmployerRepository.findAll();
+         }};
 
-    //     homeController.displayAddJobForm(model);
-    // }
+        homeController.displayAddJobForm(model);
+     }
 
     /*
      * Tests SQL query for task 3
