@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,17 +52,23 @@ public class HomeController {
 
         if (errors.hasErrors()) {
             model.addAttribute("title", "Add Job");
+            model.addAttribute(new Job());
+            model.addAttribute("errors",errors);
             model.addAttribute("employers", employerRepository.findAll());
             model.addAttribute("skills", skillRepository.findAll());
             return "add";
         }
 
-        Optional<Employer> optionalEmployer = employerRepository.findById(employerId);
-        Employer employer = optionalEmployer.orElseThrow(); // Use orElseThrow to handle the case when the employer is not found
-        newJob.setEmployer(employer);
+        Optional<Employer> optionalEmployer = employerRepository.findById( employerId);
+        //Employer employer = optionalEmployer.orElseThrow(); // Use orElseThrow to handle the case when the employer is not found
+        if(optionalEmployer.isPresent()){
+            Employer employer= optionalEmployer.get();
+            newJob.setEmployer( employer );
+        }
+
 
         Iterable<Skill> skillObjs = skillRepository.findAllById(skills);
-        newJob.setSkills(((List<Skill>) skillObjs).toString());
+        newJob.setSkills(new ArrayList<>( (List<Skill>) skillObjs ));  // Directly set the list of skills
 
         jobRepository.save(newJob);
         return "redirect:";

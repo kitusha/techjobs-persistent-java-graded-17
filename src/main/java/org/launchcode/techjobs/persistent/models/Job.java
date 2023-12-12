@@ -1,25 +1,30 @@
 package org.launchcode.techjobs.persistent.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
-public class Job extends AbstractEntity{
+public class Job extends AbstractEntity {
+
     @ManyToOne
+    @NotNull(message = "Employer is required")
     private Employer employer;
 
     @ManyToMany
-    private String skills;
+    private List<Skill> skills;
 
-    public Job(){}
-
-    public Job(Employer employer,String skills){
+    public Job() {
         super();
-        this.employer = employer;
-        this.skills =skills;
     }
 
-//
-    // Getters and setters.
+    public Job(Employer employer, List<Skill> skills) {
+        super();
+        this.employer = employer;
+        this.skills = skills;
+    }
 
     public Employer getEmployer() {
         return employer;
@@ -29,10 +34,14 @@ public class Job extends AbstractEntity{
         this.employer = employer;
     }
 
-    public String getSkills() {
+    public List<Skill> getSkills() {
         return skills;
     }
 
-    public void setSkills(String skills) {
-        this.skills= skills;
-    }}
+    public void setSkills(List<Skill> skills) {
+        this.skills = skills;
+    }
+
+    public void setSkills(String string) {
+    }
+}

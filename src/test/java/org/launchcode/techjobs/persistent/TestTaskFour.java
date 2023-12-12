@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,7 +57,7 @@ public class TestTaskFour extends AbstractTest {
        Method getJobsMethod = skillClass.getMethod("getJobs");
         Skill skill = new Skill();
         Object jobsObj = getJobsMethod.invoke(skill);
-        assertFalse(jobsObj instanceof List);
+        assertFalse(jobsObj instanceof List );
     }
 
     /*
@@ -80,7 +81,7 @@ public class TestTaskFour extends AbstractTest {
         var jobClass = getClassByName( "models.Job" );
         Field skillsField = jobClass.getDeclaredField( "skills" );
         Type skillsFieldType = skillsField.getType();
-        assertEquals( List.class , skillsFieldType ,"Job.skills should be of type List<Skills>" );
+        assertEquals( List.class, skillsFieldType ,"Job.skills should be of type List<Skills>" );
         assertNotNull( skillsField.getAnnotation( ManyToMany.class ) , "Job.skills is missing the correct mapping annotation" );
     }
 
@@ -115,21 +116,21 @@ public class TestTaskFour extends AbstractTest {
         Class homeControllerClass = getClassByName("controllers.HomeController");
         Field skillRepositoryField = null;
         try {
-            skillRepositoryField = homeControllerClass.getDeclaredField("SkillRepository");
+            skillRepositoryField = homeControllerClass.getDeclaredField("skillRepository");
        } catch (NoSuchFieldException e) {
             fail("HomeController should have a SkillRepository field");
         }
 
-        assertEquals(SkillRepository.class, skillRepositoryField.getType(), "SkillRepository is of incorrect type");
-        assertNotNull(skillRepositoryField.getAnnotation(Autowired.class), "SkillRepository must be @Autowired");
+        assertEquals(SkillRepository.class, skillRepositoryField.getType(), "skillRepository is of incorrect type");
+        assertNotNull(skillRepositoryField.getAnnotation(Autowired.class), "skillRepository must be @Autowired");
     }
     /*
     * Verifies that HomeController.processAddJobForm queries SkillRepository and sets skills properly
     * */
     @Test
    public void testProcessAddJobFormHandlesSkillsProperly (
-            @Mocked SkillRepository SkillRepository,
-            @Mocked EmployerRepository EmployerRepository,
+            @Mocked SkillRepository skillRepository,
+            @Mocked EmployerRepository employerRepository,
             @Mocked JobRepository jobRepository,
             @Mocked Job job,
             @Mocked Errors errors)
@@ -138,20 +139,20 @@ public class TestTaskFour extends AbstractTest {
         Method processAddJobFormMethod = homeControllerClass.getMethod("processAddJobForm", Job.class, Errors.class, Model.class, int.class, List.class);
 
         new Expectations() {{
-            SkillRepository.findAllById((Iterable<Integer>) any);
-            job.setSkills(((List<Skill>) any).toString());
+            skillRepository.findAllById( (Iterable<Integer>)  any );
+            job.setSkills((List<Skill>) any);
         }};
 
         Model model = new ExtendedModelMap();
         HomeController homeController = new HomeController();
 
-        Field skillRepositoryField = homeControllerClass.getDeclaredField("SkillRepository");
+        Field skillRepositoryField = homeControllerClass.getDeclaredField("skillRepository");
         skillRepositoryField.setAccessible(true);
-        skillRepositoryField.set(homeController, SkillRepository);
+        skillRepositoryField.set(homeController, skillRepository);
 
-        Field employerRepositoryField = homeControllerClass.getDeclaredField("EmployerRepository");
+        Field employerRepositoryField = homeControllerClass.getDeclaredField("employerRepository");
         employerRepositoryField.setAccessible(true);
-        employerRepositoryField.set(homeController, EmployerRepository);
+        employerRepositoryField.set(homeController, employerRepository);
 
         Field jobRepositoryField = homeControllerClass.getDeclaredField("jobRepository");
         jobRepositoryField.setAccessible(true);
@@ -170,7 +171,7 @@ public class TestTaskFour extends AbstractTest {
         Field skillRepositoryField = null;
 
         try {
-            employerRepositoryField = listControllerClass.getDeclaredField("EmployerRepository");
+            employerRepositoryField = listControllerClass.getDeclaredField("employerRepository");
         } catch (NoSuchFieldException e) {
             fail("ListController must have an EmployerRepository field");
         }
@@ -179,7 +180,7 @@ public class TestTaskFour extends AbstractTest {
         assertNotNull(employerRepositoryField.getAnnotation(Autowired.class));
 
         try {
-            skillRepositoryField = listControllerClass.getDeclaredField("SkillRepository");
+            skillRepositoryField = listControllerClass.getDeclaredField("skillRepository");
         } catch (NoSuchFieldException e) {
             fail("ListController must have a SkillRepository field");
        }
@@ -192,24 +193,24 @@ public class TestTaskFour extends AbstractTest {
    * Verifies that ListController.list sets the correct model attributes using skill/EmployerRepository objects
     * */
     @Test
-    public void testListControllerListMethodSetsFormFieldData (@Mocked Model model, @Mocked SkillRepository SkillRepository, @Mocked EmployerRepository EmployerRepository) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
+    public void testListControllerListMethodSetsFormFieldData (@Mocked Model model, @Mocked SkillRepository skillRepository, @Mocked EmployerRepository employerRepository) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
         Class listControllerClass = getClassByName("controllers.ListController");
         ListController listController = new ListController();
 
         new Expectations() {{
             model.addAttribute("employers", any);
             model.addAttribute("skills", any);
-           SkillRepository.findAll();
-            EmployerRepository.findAll();
+            skillRepository.findAll();
+            employerRepository.findAll();
         }};
 
-        Field skillRepositoryField = listControllerClass.getDeclaredField("SkillRepository");
+        Field skillRepositoryField = listControllerClass.getDeclaredField("skillRepository");
        skillRepositoryField.setAccessible(true);
-        skillRepositoryField.set(listController, SkillRepository);
+        skillRepositoryField.set(listController, skillRepository);
 
-        Field employerRepositoryField = listControllerClass.getDeclaredField("EmployerRepository");
+        Field employerRepositoryField = listControllerClass.getDeclaredField("employerRepository");
         employerRepositoryField.setAccessible(true);
-       employerRepositoryField.set(listController, EmployerRepository);
+       employerRepositoryField.set(listController, employerRepository);
 
        listController.list(model);
     }

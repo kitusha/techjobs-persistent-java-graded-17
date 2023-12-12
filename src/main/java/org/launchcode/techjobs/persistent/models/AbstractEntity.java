@@ -21,7 +21,7 @@ public abstract class AbstractEntity {
     // Constructors, getters, and setters go here
 
     protected AbstractEntity() {
-        this.id = id;
+        // No need to assign id here
     }
 
     public Long getId() {

@@ -1,29 +1,39 @@
 package org.launchcode.techjobs.persistent.models;
+// add string field for location with validation that ensures it is not empty and its length is reasonable.
+// add public accessor method
 
 import jakarta.persistence.Entity;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Employer extends AbstractEntity {
-
-    @NotBlank(message = "Location cannot be empty")
-    @Size(max = 255, message = "Location cannot be longer than 255 characters")
+    @NotNull
+    @Size(min=3, max=255)
     private String location;
 
-    // other specific fields for Employer
+    @OneToMany
+    @JoinColumn(name="employer_id")
+    private List<Job> jobs = new ArrayList<>();
 
-    // no-arg constructor required for Hibernate
     public Employer() {
-        super();  // calling the no-arg constructor of the superclass
-    }
 
-    // public accessor methods
-    public String getLocation() {
-        return location;
     }
-
-    public void setLocation(String location) {
+    public Employer(String location){
         this.location = location;
     }
+    public String getLocation(){
+        return location;
+    }
+    public void setLocation(String location){
+        this.location=location;
+    }
+
+
+
+
 }

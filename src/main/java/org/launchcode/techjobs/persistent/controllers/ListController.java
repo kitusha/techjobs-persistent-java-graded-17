@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashMap;
 
+
+
+
 @Controller
 @RequestMapping(value = "list")
 public class ListController {
@@ -38,9 +41,9 @@ public class ListController {
     public String list(Model model) {
         model.addAttribute("title", "MyJobs");
         model.addAttribute("employers", employerRepository.findAll());
-        model.addAttribute("jobs", jobRepository.findAll());
+        //model.addAttribute("jobs", JobRepository.findAll());
         model.addAttribute("skills", skillRepository.findAll()); // Pass skills data to the view
-        return "list/index";
+        return "list";
     }
 
     @RequestMapping(value = "jobs")

@@ -10,19 +10,19 @@ import java.util.Set;
 @Entity
 public class Skill extends AbstractEntity {
 
-    @NotBlank(message = "Description cannot be empty")
+    @NotBlank(message = "Description cannot be blank")
     @Size(max = 1000, message = "Description cannot be longer than 1000 characters")
     private String description;
 
     @ManyToMany(mappedBy = "skills")
     private Set<Job> jobs = new HashSet<>();
 
-    // no-arg constructor required for Hibernate
+    // No-arg constructor required for Hibernate
     public Skill() {
-        super();  // calling the no-arg constructor of the superclass
+        // Implicitly calling the no-arg constructor of the superclass
     }
 
-    // public accessor methods
+    // Public accessor methods
     public String getDescription() {
         return description;
     }

@@ -136,7 +136,7 @@ public class TestTaskThree extends AbstractTest {
 
         // verify that EmployerRepository field exists
         try {
-            employerRepositoryField = homeControllerClass.getDeclaredField("EmployerRepository");
+            employerRepositoryField = homeControllerClass.getDeclaredField("employerRepository");
         } catch (NoSuchFieldException e) {
             fail("HomeController should have an EmployerRepository field");
         }
@@ -153,24 +153,24 @@ public class TestTaskThree extends AbstractTest {
      * Verifies that HomeController.displayAddJobForm calls EmployerRepository.findAll()
      * */
      @Test
-     public void testHomeControllerFetchesEmployers(@Mocked EmployerRepository EmployerRepository, @Mocked SkillRepository SkillRepository) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
+     public void testHomeControllerFetchesEmployers(@Mocked EmployerRepository employerRepository, @Mocked SkillRepository skillRepository) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
         Class homeControllerClass = getClassByName("controllers.HomeController");
          HomeController homeController = new HomeController();
 
-         Field employerRepositoryField = homeControllerClass.getDeclaredField("EmployerRepository");
+         Field employerRepositoryField = homeControllerClass.getDeclaredField("employerRepository");
          employerRepositoryField.setAccessible(true);
-        employerRepositoryField.set(homeController, EmployerRepository);
+        employerRepositoryField.set(homeController, employerRepository);
 
          // not needed for verification, but necessary to make sure calling the controller
          // method doesn't throw a NullPointerException
-         Field skillRepositoryField = homeControllerClass.getDeclaredField("SkillRepository");
+         Field skillRepositoryField = homeControllerClass.getDeclaredField("skillRepository");
          skillRepositoryField.setAccessible(true);
-         skillRepositoryField.set(homeController, SkillRepository);
+         skillRepositoryField.set(homeController, skillRepository);
 
          Model model = new ExtendedModelMap();
 
         new Expectations() {{
-            EmployerRepository.findAll();
+            employerRepository.findAll();
          }};
 
         homeController.displayAddJobForm(model);
